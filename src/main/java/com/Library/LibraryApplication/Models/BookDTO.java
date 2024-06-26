@@ -1,11 +1,8 @@
-package com.Library.LibraryApplication.modules;
+package com.Library.LibraryApplication.Models;
 
-import jakarta.persistence.Column;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.util.Date;
 
 public class BookDTO {
     @NotEmpty(message = "The name is required")

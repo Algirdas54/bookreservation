@@ -1,4 +1,4 @@
-package com.Library.LibraryApplication.modules;
+package com.Library.LibraryApplication.Models;
 
 import jakarta.persistence.*;
 
@@ -15,7 +15,7 @@ public class Book {
     private String name;
     private String author;
     private String category;
-    private boolean reserved;
+    private int reserved;
 
     @Column(columnDefinition = "TEXT")
     private String description;
@@ -54,11 +54,11 @@ public class Book {
         this.category = category;
     }
 
-    public boolean isReserved() {
+    public int getReserved() {
         return reserved;
     }
 
-    public void setReserved(boolean reserved) {
+    public void setReserved(int reserved) {
         this.reserved = reserved;
     }
 

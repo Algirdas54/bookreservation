@@ -1,16 +1,19 @@
 package com.Library.LibraryApplication.Controllers;
 
-import com.Library.LibraryApplication.Services.BooksRepository;
-import com.Library.LibraryApplication.modules.BookDTO;
+import com.Library.LibraryApplication.Models.AppUser;
+import com.Library.LibraryApplication.Repositories.AppUserRepository;
+import com.Library.LibraryApplication.Repositories.BooksRepository;
+import com.Library.LibraryApplication.Models.BookDTO;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
-import com.Library.LibraryApplication.modules.Book;
+import com.Library.LibraryApplication.Models.Book;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.InputStream;
@@ -25,6 +28,9 @@ public class BooksController {
     @Autowired
     private BooksRepository repo;
 
+    @Autowired
+    private AppUserRepository accRepo;
+
     @GetMapping({"", "/"})
     public String showBookList(Model model) {
         List<Book> books = repo.findAll(Sort.by(Sort.Direction.DESC, "id"));
@@ -33,7 +39,6 @@ public class BooksController {
     }
     @GetMapping("/create")
     public String showCreatePage(Model model) {
-        BookDTO bookDto = new BookDTO();
         model.addAttribute("bookDto", new BookDTO());
         return "books/AddBook";
     }
@@ -185,5 +190,38 @@ public class BooksController {
         }
 
         return "redirect:/books";
+    }
+    @GetMapping("/bookinfo")
+    public String bookInfo(
+            Model model,
+            @RequestParam int id
+            ){
+
+        Book book = repo.findById(id).get();
+        model.addAttribute("book", book);
+
+        return "books/bookinfo";
+    }
+    @GetMapping("/reserve")
+    public String reserveBook(@RequestParam int id, Authentication authentication) {
+
+        Book book = repo.findById(id).get();
+        AppUser user = accRepo.findByEmail(authentication.getName());
+
+        book.setReserved(user.getId());
+
+        repo.save(book);
+
+        return "redirect:/books";
+    }
+    @GetMapping({"/mybooks"})
+    public String showReservedBooks(Model model, Authentication authentication) {
+
+        AppUser user = accRepo.findByEmail(authentication.getName());
+        List<Book> books = repo.findByReservation(user.getId());
+
+        model.addAttribute("books", books);
+
+        return "books/mybooks";
     }
 }
