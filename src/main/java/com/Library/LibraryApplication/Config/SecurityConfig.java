@@ -22,12 +22,14 @@ public class SecurityConfig {
         return http
                 .authorizeHttpRequests( auth -> auth
                         .requestMatchers("/").permitAll()
-                        .requestMatchers("/books").hasAnyRole("client","admin")
+                        .requestMatchers("/restaurants").hasAnyRole("client","admin")
                         .requestMatchers("/register").permitAll()
                         .requestMatchers("/login").permitAll()
                         .requestMatchers("/logout").hasAnyRole("client","admin")
-                        .requestMatchers("/books/create").hasRole("admin")
-                        .requestMatchers("/books/edit").hasRole("admin")
+                        .requestMatchers("/restaurants/create").hasRole("admin")
+                        .requestMatchers("/restaurants/edit").hasRole("admin")
+                        .requestMatchers("/restaurants/createmeal").hasRole("admin")
+                        .requestMatchers("/restaurants/editmeal").hasRole("admin")
                         .anyRequest().permitAll()
 
                 )
@@ -36,7 +38,7 @@ public class SecurityConfig {
                         .loginPage("/login")
                         .usernameParameter("email")
                         .passwordParameter("password")
-                        .defaultSuccessUrl("/books", true)
+                        .defaultSuccessUrl("/restaurants", true)
                 )
                 .logout(config -> config.logoutSuccessUrl("/"))
                 .build();

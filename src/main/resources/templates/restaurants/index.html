@@ -9,17 +9,14 @@
 <body>
 <nav class="navbar navbar-expand-lg bg-body-tertiary border-bottom">
     <div class="container">
-        <a class="navbar-brand" href="/">Library</a>
+        <a class="navbar-brand" href="/">Order Application</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-                    <a class="nav-link text-dark" href="/books">Books</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-dark" href="#">My Books</a>
+                    <a class="nav-link text-dark" href="/restaurants">Restaurants</a>
                 </li>
             </ul>
 
@@ -48,44 +45,34 @@
     </div>
 </nav>
 <div class="container">
-    <h1 class="text-center my-4">My Reserved Books</h1>
+    <h1 class="text-center my-4">All Restaurants</h1>
+    <a class="btn btn-primary" href="/restaurants/create" sec:authorize="hasRole('admin')">Add Restaurant</a>
 
     <table class="table">
         <thead>
         <tr>
             <th>ID</th>
             <th>Name</th>
-            <th>Author</th>
-            <th>Category</th>
-            <th>Reserved</th>
-            <th>Image</th>
-            <th>Created at</th>
+            <th>Code</th>
+            <th>Address</th>
             <th>Action</th>
         </tr>
         </thead>
         <tbody>
-            <tr th:each="book : ${books}">
-                <td th:text="${book.id}"></td>
-                <td th:text="${book.name}"></td>
-                <td th:text="${book.author}"></td>
-                <td th:text="${book.category}"></td>
-                <div th:switch="${book.reserved}">
-                    <td th:case="0">No</td>
-                    <td th:case="*">Yes</td>
-                </div>
-                <td>
-                    <img th:src="@{'/images/' + ${book.imageFileName}}"
-                         alt = "..." width="100">
-                </td>
-                <td th:text="${book.createdAt.toString().substring(0,10)}"></td>
+            <tr th:each="restaurant : ${restaurants}">
+                <td th:text="${restaurant.id}"></td>
+                <td th:text="${restaurant.name}"></td>
+                <td th:text="${restaurant.code}"></td>
+                <td th:text="${restaurant.address}"></td>
+
                 <td style="white-space:nowrap">
                     <a class="btn btn-primary btn-sm"
-                       th:href="@{/books/edit(id=${book.id})}" sec:authorize="hasRole('admin')">Edit</a>
+                       th:href="@{/restaurants/edit(id=${restaurant.id})}" sec:authorize="hasRole('admin')">Edit</a>
                     <a class="btn btn-danger btn-sm"
-                       th:href="@{/books/delete(id=${book.id})}"
+                       th:href="@{/restaurants/delete(id=${restaurant.id})}"
                        onclick="return confirm ('Are you sure?')" sec:authorize="hasRole('admin')">Delete</a>
                     <a class="btn btn-primary btn-sm"
-                       th:href="@{/books/bookinfo(id=${book.id})}">Open</a>
+                       th:href="@{/restaurants/meals(id=${restaurant.id})}">Open Menu</a>
                 </td>
             </tr>
         </tbody>

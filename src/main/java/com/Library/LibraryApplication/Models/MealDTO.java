@@ -9,6 +9,16 @@ public class MealDTO {
 
     private String description;
 
+    private int restaurant_id;
+
+    public int getRestaurant_id() {
+        return restaurant_id;
+    }
+
+    public void setRestaurant_id(int restaurant_id) {
+        this.restaurant_id = restaurant_id;
+    }
+
     public String getDescription() {
         return description;
     }

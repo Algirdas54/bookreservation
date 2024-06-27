@@ -21,7 +21,7 @@ import java.util.Date;
 import java.util.List;
 
 @Controller
-@RequestMapping("/books")
+@RequestMapping("/restaurants")
 public class RestaurantController {
 
     @Autowired
@@ -34,12 +34,12 @@ public class RestaurantController {
     public String showRestaurantList(Model model) {
         List<Restaurant> restaurants = repo.findAll(Sort.by(Sort.Direction.DESC, "id"));
         model.addAttribute("restaurants", restaurants);
-        return "books/index";
+        return "restaurants/index";
     }
     @GetMapping("/create")
     public String showCreatePage(Model model) {
         model.addAttribute("restaurantDTO", new RestaurantDTO());
-        return "books/AddBook";
+        return "restaurants/addrestaurant";
     }
     @PostMapping("/create")
     public String createRestaurant(
@@ -49,7 +49,7 @@ public class RestaurantController {
 
 
         if (result.hasErrors()){
-            return "books/AddBook";
+            return "restaurants/addrestaurant";
         }
 
         Restaurant restaurant = new Restaurant();
@@ -59,7 +59,7 @@ public class RestaurantController {
 
         repo.save(restaurant);
 
-        return "redirect:/books";
+        return "redirect:/restaurants";
     }
     @GetMapping("/edit")
     public String showEditPage(
@@ -80,13 +80,13 @@ public class RestaurantController {
         }
         catch (Exception e) {
             System.out.println("Exception: " + e.getMessage());
-            return "redirect:/books";
+            return "redirect:/restaurants";
         }
 
-        return "books/EditBook";
+        return "restaurants/editrestaurant";
     }
     @PostMapping("/edit")
-    public String updateBook(
+    public String updateRestaurant(
             Model model,
             @RequestParam int id,
             @Valid @ModelAttribute("restaurantDTO") RestaurantDTO restaurantDTO,
@@ -98,7 +98,7 @@ public class RestaurantController {
             model.addAttribute("restaurant", restaurant);
 
             if (result.hasErrors()){
-                return "books/EditBook";
+                return "restaurants/editrestaurant";
             }
 
             restaurant.setName(restaurantDTO.getName());
@@ -112,10 +112,10 @@ public class RestaurantController {
             System.out.println("Exception: " + e.getMessage());
         }
 
-        return "redirect:/books";
+        return "redirect:/restaurants";
     }
     @GetMapping("/delete")
-    public String deleteBook(
+    public String deleteRestaurant(
             @RequestParam int id
             ) {
 
@@ -128,28 +128,7 @@ public class RestaurantController {
             System.out.println("Exception: " + e.getMessage());
         }
 
-        return "redirect:/books";
-    }
-    @GetMapping("/bookinfo")
-    public String bookInfo(
-            Model model,
-            @RequestParam int id
-            ){
-
-        Restaurant restaurant = repo.findById(id).get();
-        model.addAttribute("restaurant", restaurant);
-
-        return "books/bookinfo";
+        return "redirect:/restaurants";
     }
 
-//    @GetMapping({"/mybooks"})
-//    public String showReservedBooks(Model model, Authentication authentication) {
-//
-//        AppUser user = accRepo.findByEmail(authentication.getName());
-//        List<Book> books = repo.findByReservation(user.getId());
-//
-//        model.addAttribute("books", books);
-//
-//        return "books/mybooks";
-//    }
 }

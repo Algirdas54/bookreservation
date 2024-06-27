@@ -13,6 +13,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
+import com.Library.LibraryApplication.Models.Restaurant;
 
 import java.io.InputStream;
 import java.nio.file.*;
@@ -20,22 +21,31 @@ import java.util.Date;
 import java.util.List;
 
 @Controller
-@RequestMapping("/books")
+@RequestMapping("/restaurants")
 public class MealController {
+
+    private int resid;
 
     @Autowired
     private MealRepository repo;
 
+    @Autowired
+    private RestaurantRepository restaurantRepo;
+
     @GetMapping({"/meals"})
-    public String showRestaurantList(Model model) {
-        List<Meal> meals = repo.findAll(Sort.by(Sort.Direction.DESC, "id"));
+    public String showMenu(Model model, @RequestParam int id) {
+        Restaurant restaurant = restaurantRepo.findById(id).get();
+        List<Meal> meals = repo.findByRestaurantID(id);
         model.addAttribute("meals", meals);
-        return "books/meals";
+        model.addAttribute("restaurant", restaurant);
+        return "restaurants/meals";
     }
     @GetMapping("/createmeal")
-    public String showCreatePage(Model model) {
-        model.addAttribute("mealDTO", new MealDTO());
-        return "books/createmeal";
+    public String showCreatePage(Model model, @RequestParam int id) {
+        MealDTO mealDTO = new MealDTO();
+        resid = id;
+        model.addAttribute("mealDTO", mealDTO);
+        return "restaurants/createmeal";
     }
     @PostMapping("/createmeal")
     public String createMeal(
@@ -45,16 +55,17 @@ public class MealController {
 
 
         if (result.hasErrors()){
-            return "books/createmeal";
+            return "restaurants/createmeal";
         }
 
         Meal meal = new Meal();
         meal.setName(mealDTO.getName());
         meal.setDescription(mealDTO.getDescription());
+        meal.setRestaurant_id(resid);
 
         repo.save(meal);
 
-        return "redirect:/books";
+        return "redirect:/restaurants";
     }
     @GetMapping("/editmeal")
     public String showEditMeal(
@@ -74,10 +85,10 @@ public class MealController {
         }
         catch (Exception e) {
             System.out.println("Exception: " + e.getMessage());
-            return "redirect:/books";
+            return "redirect:/restaurants";
         }
 
-        return "books/editmeal";
+        return "restaurants/editmeal";
     }
     @PostMapping("/editmeal")
     public String updateMeal(
@@ -92,7 +103,7 @@ public class MealController {
             model.addAttribute("meal", meal);
 
             if (result.hasErrors()){
-                return "books/editmeal";
+                return "restaurants/editmeal";
             }
 
             meal.setName(mealDTO.getName());
@@ -105,7 +116,7 @@ public class MealController {
             System.out.println("Exception: " + e.getMessage());
         }
 
-        return "redirect:/books";
+        return "redirect:/restaurants";
     }
     @GetMapping("/deletemeal")
     public String deleteMeal(
@@ -121,28 +132,7 @@ public class MealController {
             System.out.println("Exception: " + e.getMessage());
         }
 
-        return "redirect:/books";
+        return "redirect:/restaurants";
     }
-//    @GetMapping("/bookinfo")
-//    public String bookInfo(
-//            Model model,
-//            @RequestParam int id
-//    ){
-//
-//        Restaurant restaurant = repo.findById(id).get();
-//        model.addAttribute("restaurant", restaurant);
-//
-//        return "books/bookinfo";
-//    }
 
-//    @GetMapping({"/mybooks"})
-//    public String showReservedBooks(Model model, Authentication authentication) {
-//
-//        AppUser user = accRepo.findByEmail(authentication.getName());
-//        List<Book> books = repo.findByReservation(user.getId());
-//
-//        model.addAttribute("books", books);
-//
-//        return "books/mybooks";
-//    }
 }
