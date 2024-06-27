@@ -74,7 +74,7 @@ public class RestaurantController {
             RestaurantDTO restaurantDTO = new RestaurantDTO();
             restaurantDTO.setName(restaurant.getName());
             restaurantDTO.setCode(restaurant.getCode());
-            restaurantDTO.setAddress(restaurantDTO.getAddress());
+            restaurantDTO.setAddress(restaurant.getAddress());
 
             model.addAttribute("restaurantDTO", restaurantDTO);
         }
